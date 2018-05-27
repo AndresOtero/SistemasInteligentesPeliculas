@@ -1,4 +1,27 @@
 ['budget', 'genres', 'homepage', 'id', 'keywords', 'original_language', 'original_title', 'overview', 'popularity', 'production_companies', 'production_countries', 'release_date', 'revenue', 'runtime', 'spoken_languages', 'status', 'tagline', 'title', 'vote_average', 'vote_count', 'movie_id', 'title', 'cast', 'crew']
+
+---------------------BUDGET--------------------- 
+
+FALTA INFORMACION EN ALGUNAS PELICULAS
+rangos de valores [(0.0, 0.777), (0.78, 15.0), (15.0, 40.0), (40.0, 380.0)]
+
+---------------------POPULARIDAD--------------------- 
+
+rangos de valores [(0.0, 4.665309), (4.66723, 12.904615), (12.921594, 28.27648), (28.350529, 875.581305)]
+
+---------------------FECHA DE ESTRENO--------------------- 
+
+rangos de valores [(datetime.date(1916, 9, 4), datetime.date(1999, 7, 9)), (datetime.date(1999, 7, 14), datetime.date(2005, 10, 1)), (datetime.date(2005, 10, 5), datetime.date(2011, 2, 16)), (datetime.date(2011, 2, 18), datetime.date(2017, 2, 3))]
+
+---------------------REVENUE-------------------- 
+
+FALTA INFORMACION EN ALGUNAS PELICULAS
+rangos de valores [('0', '0'), ('0', '188072649'), ('188126', '43101594'), ('43165571', '99965753')]
+
+---------------------REVENUE--------------------- 
+
+FALTA INFORMACION EN ALGUNAS PELICULAS
+
 ---------------------ACTORES TOP 100--------------------- 
 
 porcentaje de peliculas con ACTORES top 100 0.421731890092

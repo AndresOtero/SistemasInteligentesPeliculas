@@ -1,5 +1,6 @@
 import csv
 import json
+from datetime import date
 rows_credits=[]
 NAME="name"
 JOB="job"
@@ -7,6 +8,7 @@ DIRECTOR="Director"
 PRODUCER="Producer"
 EX_PRODUCER="Executive Producer"
 WRITER = "Writer"
+
 FIRST=0
 TOP1 =1
 TOP10=10
@@ -25,6 +27,7 @@ AT_LEAST_2=2
 AT_LEAST_1=1
 ZERO=0
 
+BUDGET=0
 CREDITS_ACTOR=22
 CREDITS_CREW=23
 MOVIES_GENRE=1
@@ -33,6 +36,10 @@ PRODUCTION_COMPANIES=9
 PRODUCTION_COUNTRIES=10
 AVERAGE=18
 COUNT=19
+POPULARITY=8
+RELEASE_DATE=11
+REVENUE=12
+RUNTIME=13
 
 #----------------------------------------NUMBER OF APPEARANCES------------------------------------
 
@@ -262,7 +269,45 @@ for r in range(len(rows_movies)):
 
 print rows[0]
 
-print "---------------------ACTORES TOP 100---------------------","\n"
+tamanio=len(rows)-1
+rangos=[( (tamanio*i)/4  ,(tamanio*(i+1))/4 -1) for i in range(0,4)]
+
+"""Arreglo de datos """
+for r in rows[1:]:
+	if r[RELEASE_DATE]=="":
+		r[RELEASE_DATE]="2015-3-1"
+
+
+print  "\n","---------------------BUDGET---------------------","\n"
+print "FALTA INFORMACION EN ALGUNAS PELICULAS"
+budget_list= sorted([ float(r[BUDGET])/10**6 for r in rows[1:]])
+budget_range_values=[ (budget_list[x[0]],budget_list[x[1]]) for x in rangos]
+print "rangos de valores",budget_range_values
+
+print  "\n","---------------------POPULARIDAD---------------------","\n"
+popularity_list= sorted([ float(r[POPULARITY]) for r in rows[1:]])
+popularity_range_values=[ (popularity_list[x[0]],popularity_list[x[1]]) for x in rangos]
+print "rangos de valores",popularity_range_values
+
+print  "\n","---------------------FECHA DE ESTRENO---------------------","\n"
+release_date_list= sorted([ date(int(str(r[RELEASE_DATE]).split("-")[0]),int(str(r[RELEASE_DATE]).split("-")[1]),int(str(r[RELEASE_DATE]).split("-")[2])) for r in rows[1:] if r[RELEASE_DATE]!=""])
+release_date_range_values=[ (release_date_list[x[0]],release_date_list[x[1]]) for x in rangos]
+print "rangos de valores",release_date_range_values
+
+
+print  "\n","---------------------REVENUE--------------------","\n"
+print "FALTA INFORMACION EN ALGUNAS PELICULAS"
+revenue_list= sorted([ r[REVENUE] for r in rows[1:] ])
+revenue_range_values=[ (revenue_list[x[0]],revenue_list[x[1]]) for x in rangos]
+print "rangos de valores",revenue_range_values
+
+print  "\n","---------------------REVENUE---------------------","\n"
+print "FALTA INFORMACION EN ALGUNAS PELICULAS"
+#runtime_list= sorted([ float(r[REVENUE]) for r in rows[1:] ])
+#runtime_range_values=[ (runtime_list[x[0]],runtime_list[x[1]]) for x in rangos]
+#print "rangos de valores",runtime_range_values
+
+print "\n","---------------------ACTORES TOP 100---------------------","\n"
 #print "Lista de ACTORES",get_top_list(get_top_from_m_to_n(CREDITS_ACTOR,NAME,rows,FIRST,TOP100))
 print "porcentaje de peliculas con ACTORES top 100",number_of_appearances_over_total_from_top_n_to_m_in_category(CREDITS_ACTOR,NAME,rows,FIRST,TOP100)
 
@@ -310,7 +355,7 @@ print "PELICULAS CON PRODUCTORES EJECUTIVOS",number_of_appearances_over_total_fr
 
 print "\n---------------------GUIONISTA---------------------","\n"
 print "PELICULAS CON GUIONISTA",number_of_appearances_over_total_from_k_to_q_appearances_in_category_specific_second_category(CREDITS_CREW,NAME,JOB,WRITER,rows,0,MAX)
-"""
+""""
 rows_average=[  row   for row in rows[1:] if float(row[AVERAGE]) > 7.0]
 print "\n \n TOP 10 \n"
 print len(rows_average)
