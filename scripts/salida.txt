@@ -1,27 +1,43 @@
-[(0, 'budget'), (1, 'genres'), (2, 'homepage'), (3, 'id'), (4, 'keywords'), (5, 'original_language'), (6, 'original_title'), (7, 'overview'), (8, 'popularity'), (9, 'production_companies'), (10, 'production_countries'), (11, 'release_date'), (12, 'revenue'), (13, 'runtime'), (14, 'spoken_languages'), (15, 'status'), (16, 'tagline'), (17, 'title'), (18, 'vote_average'), (19, 'vote_count'), (20, 'movie_id'), (21, 'title'), (22, 'cast'), (23, 'crew')]
-TOP 10 
+['budget', 'genres', 'homepage', 'id', 'keywords', 'original_language', 'original_title', 'overview', 'popularity', 'production_companies', 'production_countries', 'release_date', 'revenue', 'runtime', 'spoken_languages', 'status', 'tagline', 'title', 'vote_average', 'vote_count', 'movie_id', 'title', 'cast', 'crew']
+---------------------ACTORES TOP 100--------------------- 
 
-4804
-ACTORES [('Samuel L. Jackson', 67), ('Robert De Niro', 57), ('Bruce Willis', 51), ('Matt Damon', 48), ('Morgan Freeman', 46), ('Steve Buscemi', 43), ('Liam Neeson', 41), ('Johnny Depp', 40), ('Owen Wilson', 40), ('Alec Baldwin', 39)]
-GENEROS [('Drama', 2297), ('Comedy', 1722), ('Thriller', 1274), ('Action', 1154), ('Romance', 894), ('Adventure', 790), ('Crime', 696), ('Science Fiction', 535), ('Horror', 519), ('Family', 513), ('Fantasy', 424), ('Mystery', 348), ('Animation', 234), ('History', 197), ('Music', 185)]
-LENGUAJE ORIGINAL [('en', 4505), ('fr', 70), ('es', 32), ('zh', 27), ('de', 27), ('hi', 19), ('ja', 16), ('it', 14), ('cn', 12), ('ru', 11)]
-PRODUCTORAS [('Warner Bros.', 319), ('Universal Pictures', 311), ('Paramount Pictures', 285), ('Twentieth Century Fox Film Corporation', 222), ('Columbia Pictures', 201), ('New Line Cinema', 165), ('Metro-Goldwyn-Mayer (MGM)', 122), ('Touchstone Pictures', 118), ('Walt Disney Pictures', 114), ('Relativity Media', 102), ('Columbia Pictures Corporation', 96), ('Miramax Films', 94), ('Village Roadshow Pictures', 81), ('DreamWorks SKG', 79), ('United Artists', 75)]
-PAISES PRODUCTORES [('United States of America', 3956), ('United Kingdom', 636), ('Germany', 324), ('France', 306), ('Canada', 261), ('Australia', 110), ('Italy', 72), ('Spain', 71), ('China', 59), ('Japan', 58)]
-DIRECTORS [('Steven Spielberg', 27), ('Woody Allen', 22), ('Martin Scorsese', 21), ('Clint Eastwood', 20), ('Robert Rodriguez', 17), ('Ridley Scott', 16), ('Spike Lee', 16), ('Renny Harlin', 15), ('Steven Soderbergh', 15), ('Oliver Stone', 14)]
-PRODUCER [('Scott Rudin', 44), ('Joel Silver', 42), ('Tim Bevan', 42), ('Eric Fellner', 40), ('Neal H. Moritz', 38), ('Brian Grazer', 38), ('Arnon Milchan', 32), ('John Davis', 31), ('Jerry Bruckheimer', 30), ('Gary Lucchesi', 28)]
-EXECUTIVE PRODUCER [('Bob Weinstein', 58), ('Harvey Weinstein', 57), ('Bruce Berman', 48), ('Toby Emmerich', 33), ('Steven Spielberg', 30), ('Stan Lee', 28), ('Thomas Tull', 22), ('Arnon Milchan', 22), ('Ryan Kavanaugh', 21), ('Richard Brener', 18)]
-WRITER [('Quentin Tarantino', 7), ('Tyler Perry', 6), ('Robert Rodriguez', 6), ('M. Night Shyamalan', 6), ('Woody Allen', 6), ('Kevin Smith', 5), ('Mike Leigh', 5), ('David Zucker', 5), ('Ethan Coen', 5), ('Joel Coen', 5)]
+porcentaje de peliculas con ACTORES top 100 0.421731890092
 
- 
- TOP 10 
+---------------------GENEROS--------------------- 
 
-809
-ACTORES [('Samuel L. Jackson', 19), ('Robert De Niro', 15), ('Tom Hanks', 15), ('Brad Pitt', 14), ('Bill Murray', 13), ('Matt Damon', 13), ('Paul Giamatti', 13), ('John Ratzenberger', 12), ('Leonardo DiCaprio', 12), ('Gary Oldman', 11)]
-GENEROS [('Drama', 527), ('Comedy', 173), ('Thriller', 156), ('Action', 144), ('Romance', 143), ('Adventure', 131), ('Crime', 126), ('Family', 73), ('Science Fiction', 73), ('History', 68), ('Fantasy', 65), ('Mystery', 62), ('Animation', 53), ('War', 53), ('Documentary', 44)]
-LENGUAJE ORIGINAL [('en', 703), ('fr', 19), ('es', 12), ('de', 12), ('ja', 8), ('zh', 7), ('it', 7), ('hi', 6), ('pt', 5), ('ko', 5)]
-PRODUCTORAS [('Warner Bros.', 78), ('Universal Pictures', 57), ('Paramount Pictures', 47), ('Twentieth Century Fox Film Corporation', 39), ('New Line Cinema', 26), ('Columbia Pictures', 25), ('United Artists', 24), ('Walt Disney Pictures', 23), ('Columbia Pictures Corporation', 20), ('Metro-Goldwyn-Mayer (MGM)', 18), ('Miramax Films', 18), ('Working Title Films', 17), ('Canal+', 17), ('Touchstone Pictures', 17), ('DreamWorks SKG', 14)]
-PAISES PRODUCTORES [('United States of America', 628), ('United Kingdom', 136), ('Germany', 67), ('France', 63), ('Canada', 36), ('Italy', 26), ('Spain', 19), ('Australia', 16), ('India', 16), ('Japan', 15)]
-DIRECTORS [('Steven Spielberg', 13), ('Martin Scorsese', 11), ('Clint Eastwood', 9), ('Quentin Tarantino', 8), ('David Fincher', 8), ('Christopher Nolan', 7), ('Ridley Scott', 6), ('Joel Coen', 6), ('Robert Zemeckis', 6), ('Stanley Kubrick', 6)]
-PRODUCER [('Scott Rudin', 12), ('Eric Fellner', 11), ('Tim Bevan', 10), ('Arnon Milchan', 10), ('Steven Spielberg', 9), ('Brian Grazer', 9), ('Clint Eastwood', 8), ('David Heyman', 8), ('Kathleen Kennedy', 8), ('Lawrence Bender', 7)]
-EXECUTIVE PRODUCER [('Bob Weinstein', 16), ('Harvey Weinstein', 15), ('John Lasseter', 12), ('Bruce Berman', 8), ('Tessa Ross', 7), ('George Lucas', 7), ('Stan Lee', 7), ('Thomas Tull', 6), ('Michael De Luca', 6), ('Frank Marshall', 6)]
-WRITER [('Quentin Tarantino', 5), ('Ethan Coen', 3), ('Wes Anderson', 3), ('Joel Coen', 3), ('Kevin Hart', 2), ('James Cameron', 2), ('Richard Curtis', 2), ('Joss Whedon', 2), ('John Singleton', 2), ('Shane Meadows', 2)]
+PORCENTAJE GENEROS DRAMA 0.247293921732
+PORCENTAJE GENEROS COMEDIA 0.219400499584
+PORCENTAJE GENEROS DRAMA 0.130724396336
+
+---------------------LENGUAJE ORIGINAL--------------------- 
+
+TOP1 LENGUAJE ORIGINAL ['en']
+PORCENTAJE LENGUAJE ORIGINAL 0.937760199833
+
+---------------------PRODUCTORAS --------------------- 
+
+PORCENTAJE  PRODUCTORAS TOP 10 0.380308076603
+PORCENTAJE  PRODUCTORAS TOP11-100 0.252497918401
+
+---------------------PAISES PRODUCTORES--------------------- 
+
+PAISES PRODUCTORES ['United States of America']
+PAISES PRODUCTORES 0.823480432973
+
+---------------------DIRECTORES --------------------- 
+
+DIRECTORES AL MENOS 5 PELICULAS 0.334096586178
+DIRECTORES ENTRE 4 Y 2 0.368442964197
+DIRECTORES CON 1 PELICULA 0.310158201499
+
+---------------------PRODUCTORES--------------------- 
+
+PELICULAS CON PRODUCTORES  0.78684429642
+
+---------------------PRODUCTORES EJECUTIVOS--------------------- 
+
+PELICULAS CON PRODUCTORES EJECUTIVOS 0.468151540383
+
+---------------------GUIONISTA--------------------- 
+
+PELICULAS CON GUIONISTA 0.322855953372
