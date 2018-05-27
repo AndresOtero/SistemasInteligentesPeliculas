@@ -7,7 +7,7 @@ DIRECTOR="Director"
 PRODUCER="Producer"
 EX_PRODUCER="Executive Producer"
 WRITER = "Writer"
-
+FIRST=0
 TOP10=10
 TOP15=15
 
@@ -20,6 +20,37 @@ PRODUCTION_COMPANIES=9
 PRODUCTION_COUNTRIES=10
 AVERAGE=18
 COUNT=19
+
+
+
+def number_of_appearances_over_total_from_top_n_to_m_in_category(row_number,category_name,rows,m,n):
+	return appearances_in_list(row_number,category_name,rows,get_top_list(get_top_from_n_to_m(row_number,category_name,rows,m,n)))
+def get_top_list(top_n):
+	return [x[0] for x in top_n]
+
+def appearances_in_list(row_number,category_name,rows,top_list):
+	dict_cat={}
+	num=0
+	total=float(len(rows))
+	for row in rows[1:]:
+		category=json.loads(row[row_number])
+		category_list=[ str(cat[category_name].encode('utf-8')) for cat in category]
+		if any([i for i in category_list if i in top_list]):
+			num=num+1
+	return (num/total)
+
+def get_top_from_n_to_m(row_number,category_name,rows,m,n):
+	dict_cat={}
+	for row in rows[1:]:
+		category=json.loads(row[row_number])
+		for cat in category:
+			categorizable=str(cat[category_name].encode('utf-8'))
+			if(categorizable not in dict_cat):
+				dict_cat[categorizable]=1
+			else:
+				dict_cat[categorizable]+=1
+	top_n_cat= [ (categorizable,dict_cat[categorizable]) for categorizable in   sorted(dict_cat, key=dict_cat.get, reverse=True)[m:n]]
+	return top_n_cat
 
 def get_top_n(row_number,category_name,rows,n):
 	"""Ejemplo
@@ -76,7 +107,7 @@ def get_top_n_specific_second_category(row_number,category_name,second_category_
 	return top_n_cat
 
 
-with open('tmdb_5000_credits.csv') as csvfile:
+with open('../data/tmdb_5000_credits.csv') as csvfile:
 	readCSV = csv.reader(csvfile, delimiter=',')
    	for row in readCSV:
    		rows_credits.append(row)
@@ -84,7 +115,7 @@ with open('tmdb_5000_credits.csv') as csvfile:
 
 
 rows_movies=[]
-with open('tmdb_5000_movies.csv') as csvfile:
+with open('../data/tmdb_5000_movies.csv') as csvfile:
 	readCSV = csv.reader(csvfile, delimiter=',')
    	for row in readCSV:
    		rows_movies.append(row)
@@ -97,6 +128,9 @@ print [ (i, rows[0][i]) for i in range(len(rows[0]))]
 print "TOP 10 \n"
 print len(rows)
 print "ACTORES",get_top_n(CREDITS_ACTOR,NAME,rows,TOP10)
+print "ACTORES",get_top_list(get_top_n(CREDITS_ACTOR,NAME,rows,TOP10))
+print "ACTORES",number_of_appearances_over_total_from_top_n_to_m_in_category(CREDITS_ACTOR,NAME,rows,FIRST,TOP10)
+exit()
 print "GENEROS",get_top_n(MOVIES_GENRE,NAME,rows,TOP15)
 print "LENGUAJE ORIGINAL",get_top_n_no_multiple_options(ORIGINAL_LANGUAGE,rows,TOP10)
 print "PRODUCTORAS",get_top_n(PRODUCTION_COMPANIES,NAME,rows,TOP15)
