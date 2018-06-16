@@ -28,6 +28,8 @@ AT_LEAST_1=1
 ZERO=0
 
 BUDGET=0
+CREDITS_ID=20
+CREDITS_TITLE=21
 CREDITS_ACTOR=22
 CREDITS_CREW=23
 MOVIES_GENRE=1
@@ -41,6 +43,16 @@ RELEASE_DATE=11
 REVENUE=12
 RUNTIME=13
 
+CATEGORY_RANGE=0
+CATEGORY=1
+
+ROW_NUMBER=0
+CATEGORY_NAME=1
+TOP_LIST=2
+EXCLUSION_LIST=3
+ROW_NAME=4
+SECOND_CATEGORY_NAME=5
+SECOND_CATEGORY_VALUE=6
 #----------------------------------------NUMBER OF APPEARANCES------------------------------------
 
 def number_of_appearances_over_total_from_top_n_to_m_in_category(row_number,category_name,rows,m,n):
@@ -66,6 +78,23 @@ def number_of_appearances_over_total_from_k_to_q_appearances_in_category_specifi
 def get_top_list(top_n):
 	return [x[0] for x in top_n]
 
+#----------------------------------------APPEAR IN LIST------------------------------------
+def appear_in_list(row_number,category_name,row,top_list,exclution_list,second_category_name,second_category_value):
+	if second_category_name is not None:
+		category = json.loads(row[row_number])
+		category_list = [str(cat[category_name].encode('utf-8')) for cat in category if
+						 str(cat[second_category_name].encode('utf-8')) == second_category_value]
+		return any([i for i in category_list if i in top_list])
+	if category_name is None:
+		categorizable = str(row[row_number].encode('utf-8'))
+		return (categorizable in top_list)
+	else:
+		category = json.loads(row[row_number])
+		category_list = [str(cat[category_name].encode('utf-8')) for cat in category]
+		if exclution_list is None:
+			return any([i for i in category_list if i in top_list])
+		else:
+			return  any([i for i in category_list if i in top_list]) and not ( any ([i for i in category_list if i in exclution_list]))
 
 #----------------------------------------APPEARANCES------------------------------------
 
@@ -123,6 +152,8 @@ def appearances_in_list_specific_second_category_with_exclusion(row_number,categ
 		if any([i for i in category_list if i in top_list]) and not ( any ([i for i in category_list if i in exclution_list])):
 			num=num+1
 	return (num/total)
+
+
 
 #----------------------------------------GET TOP------------------------------------
 
@@ -271,90 +302,133 @@ print rows[0]
 
 tamanio=len(rows)-1
 rangos=[( (tamanio*i)/4  ,(tamanio*(i+1))/4 -1) for i in range(0,4)]
+rangos3=[( (tamanio*i)/3  ,(tamanio*(i+1))/3 -1) for i in range(0,3)]
 
 """Arreglo de datos """
 for r in rows[1:]:
 	if r[RELEASE_DATE]=="":
 		r[RELEASE_DATE]="2015-3-1"
 
+ranges=[]
 
 print  "\n","---------------------BUDGET---------------------","\n"
 print "FALTA INFORMACION EN ALGUNAS PELICULAS"
-budget_list= sorted([ float(r[BUDGET])/10**6 for r in rows[1:]])
-budget_range_values=[ (budget_list[x[0]],budget_list[x[1]]) for x in rangos]
+budget_list= sorted([ float(r[BUDGET]) for r in rows[1:]])
+budget_range_values=[ (budget_list[x[0]],budget_list[x[1]]) for x in rangos3]
 print "rangos de valores",budget_range_values
+ranges.append([budget_range_values,BUDGET])
 
 print  "\n","---------------------POPULARIDAD---------------------","\n"
 popularity_list= sorted([ float(r[POPULARITY]) for r in rows[1:]])
 popularity_range_values=[ (popularity_list[x[0]],popularity_list[x[1]]) for x in rangos]
 print "rangos de valores",popularity_range_values
+ranges.append([popularity_range_values,POPULARITY])
 
 print  "\n","---------------------FECHA DE ESTRENO---------------------","\n"
 release_date_list= sorted([ date(int(str(r[RELEASE_DATE]).split("-")[0]),int(str(r[RELEASE_DATE]).split("-")[1]),int(str(r[RELEASE_DATE]).split("-")[2])) for r in rows[1:] if r[RELEASE_DATE]!=""])
 release_date_range_values=[ (release_date_list[x[0]],release_date_list[x[1]]) for x in rangos]
 print "rangos de valores",release_date_range_values
-
+ranges.append([popularity_range_values,POPULARITY])
 
 print  "\n","---------------------REVENUE--------------------","\n"
 print "FALTA INFORMACION EN ALGUNAS PELICULAS"
-revenue_list= sorted([ r[REVENUE] for r in rows[1:] ])
-revenue_range_values=[ (revenue_list[x[0]],revenue_list[x[1]]) for x in rangos]
+revenue_list= sorted([ float(r[REVENUE]) for r in rows[1:] ])
+revenue_range_values=[ (revenue_list[x[0]],revenue_list[x[1]]) for x in rangos3]
 print "rangos de valores",revenue_range_values
+ranges.append([revenue_range_values,REVENUE])
+def change(f):
+	if (f==""):
+		return float(0)
+	else:
+		return float(f)
 
-print  "\n","---------------------REVENUE---------------------","\n"
+print  "\n","---------------------RUNTIME--------------------","\n"
 print "FALTA INFORMACION EN ALGUNAS PELICULAS"
-#runtime_list= sorted([ float(r[REVENUE]) for r in rows[1:] ])
-#runtime_range_values=[ (runtime_list[x[0]],runtime_list[x[1]]) for x in rangos]
-#print "rangos de valores",runtime_range_values
+for r in rows[1:]:
+	r[RUNTIME]=change(r[RUNTIME])
+runtime_list= sorted([ r[RUNTIME] for r in rows[1:] ])
+runtime_range_values=[ (runtime_list[x[0]],runtime_list[x[1]]) for x in rangos3]
+print "rangos de valores",runtime_range_values
+ranges.append([runtime_range_values,RUNTIME])
+
+specific_category_lists=[]
+specific_category_ranges=[]
 
 print "\n","---------------------ACTORES TOP 100---------------------","\n"
 #print "Lista de ACTORES",get_top_list(get_top_from_m_to_n(CREDITS_ACTOR,NAME,rows,FIRST,TOP100))
 print "porcentaje de peliculas con ACTORES top 100",number_of_appearances_over_total_from_top_n_to_m_in_category(CREDITS_ACTOR,NAME,rows,FIRST,TOP100)
+top_list_actor=get_top_list( get_top_from_m_to_n(CREDITS_ACTOR,NAME,rows,FIRST,TOP100))
+specific_category_lists.append([CREDITS_ACTOR,NAME,top_list_actor,None,"TOP 100 ACTOR"])
 
 print "\n---------------------GENEROS---------------------","\n"
+
 DRAMA=get_top_list(get_top_from_m_to_n(MOVIES_GENRE,NAME,rows,FIRST,TOP1))
 COMEDIA= get_top_list(get_top_from_m_to_n(MOVIES_GENRE,NAME,rows,1,2))
 THRILLER= get_top_list(get_top_from_m_to_n(MOVIES_GENRE,NAME,rows,2,3))
-print "PORCENTAJE GENEROS DRAMA",number_of_appearances_over_total_from_top_n_to_m_in_category_with_exclusion(MOVIES_GENRE,NAME,rows,FIRST,TOP1,COMEDIA+THRILLER)
-print "PORCENTAJE GENEROS COMEDIA",number_of_appearances_over_total_from_top_n_to_m_in_category_with_exclusion(MOVIES_GENRE,NAME,rows,1,2,DRAMA+THRILLER)
-print "PORCENTAJE GENEROS DRAMA",number_of_appearances_over_total_from_top_n_to_m_in_category_with_exclusion(MOVIES_GENRE,NAME,rows,2,3,DRAMA+COMEDIA)
+print "PORCENTAJE GENEROS DRAMA",number_of_appearances_over_total_from_top_n_to_m_in_category(MOVIES_GENRE,NAME,rows,FIRST,TOP1)
+print "PORCENTAJE GENEROS COMEDIA",number_of_appearances_over_total_from_top_n_to_m_in_category_with_exclusion(MOVIES_GENRE,NAME,rows,1,2,DRAMA)
+print "PORCENTAJE GENEROS THRILLER",number_of_appearances_over_total_from_top_n_to_m_in_category_with_exclusion(MOVIES_GENRE,NAME,rows,2,3,DRAMA+COMEDIA)
+specific_category_ranges.append([MOVIES_GENRE,NAME,[DRAMA,COMEDIA,THRILLER],None,"GENEROS"])
 
 print "\n---------------------LENGUAJE ORIGINAL---------------------","\n"
-print "TOP1 LENGUAJE ORIGINAL",get_top_list(get_top_n_no_multiple_options(ORIGINAL_LANGUAGE,rows,1))
+top_language=get_top_list(get_top_n_no_multiple_options(ORIGINAL_LANGUAGE,rows,1))
+print "TOP1 LENGUAJE ORIGINAL",top_language
 print "PORCENTAJE LENGUAJE ORIGINAL",number_of_appearances_over_total_from_top_n_to_m_in_category_no_multiples_options(ORIGINAL_LANGUAGE,rows,FIRST,TOP1)
+specific_category_lists.append([ORIGINAL_LANGUAGE,None,top_language,None,"English"])
+
 
 print "\n---------------------PRODUCTORAS ---------------------","\n"
 TOP10_PRODUCTORAS=get_top_list(get_top_from_m_to_n(PRODUCTION_COMPANIES,NAME,rows,FIRST,TOP10))
-#print "PRODUCTORAS TOP 10",TOP10_PRODUCTORAS
+TOP11_100_PRODUCTORAS=get_top_list(get_top_from_m_to_n(PRODUCTION_COMPANIES,NAME,rows,11,TOP100))
+
+print "PRODUCTORAS TOP 10",TOP10_PRODUCTORAS
 print "PORCENTAJE  PRODUCTORAS TOP 10",number_of_appearances_over_total_from_top_n_to_m_in_category(PRODUCTION_COMPANIES,NAME,rows,FIRST,TOP10)
 
-#print "PRODUCTORAS 11-100",get_top_list(get_top_from_m_to_n(PRODUCTION_COMPANIES,NAME,rows,11,TOP100))
+print "PRODUCTORAS 11-100",TOP11_100_PRODUCTORAS
 print "PORCENTAJE  PRODUCTORAS TOP11-100",number_of_appearances_over_total_from_top_n_to_m_in_category_with_exclusion(PRODUCTION_COMPANIES,NAME,rows,11,TOP100,TOP10_PRODUCTORAS)
 
+specific_category_ranges.append([PRODUCTION_COMPANIES,NAME,[TOP10_PRODUCTORAS,TOP11_100_PRODUCTORAS],None,"PRODUCTORAS"])
+
+
 print "\n---------------------PAISES PRODUCTORES---------------------","\n"
-print "PAISES PRODUCTORES",get_top_list(get_top_from_m_to_n(PRODUCTION_COUNTRIES,NAME,rows,FIRST,TOP1))
+top_country=get_top_list(get_top_from_m_to_n(PRODUCTION_COUNTRIES,NAME,rows,FIRST,TOP1))
+print "PAISES PRODUCTORES",top_country
 print "PAISES PRODUCTORES",number_of_appearances_over_total_from_top_n_to_m_in_category(PRODUCTION_COUNTRIES,NAME,rows,FIRST,TOP1)
+specific_category_lists.append([PRODUCTION_COUNTRIES,NAME,top_country,None,"USA"])
+
 
 print "\n---------------------DIRECTORES ---------------------","\n"
-#print "DIRECTORES",get_top_list(get_from_k_to_q_appearances_specific_second_category(CREDITS_CREW,NAME,JOB,DIRECTOR,rows,AT_LEAST_5,MAX))
+DIRECTOR_AL_MENOS_5=get_top_list(get_from_k_to_q_appearances_specific_second_category(CREDITS_CREW,NAME,JOB,DIRECTOR,rows,AT_LEAST_5,MAX))
+print "DIRECTORES",DIRECTOR_AL_MENOS_5
 print "DIRECTORES AL MENOS 5 PELICULAS",number_of_appearances_over_total_from_k_to_q_appearances_in_category_specific_second_category(CREDITS_CREW,NAME,JOB,DIRECTOR,rows,AT_LEAST_5,MAX)
-#print "\n---------------------DIRECTORES ENTRE 4 Y 2 PELICULAS---------------------","\n"
-#prBint "DIRECTORES",get_top_list(get_from_k_to_q_appearances_specific_second_category(CREDITS_CREW,NAME,JOB,DIRECTOR,rows,AT_LEAST_2,AT_LEAST_2))
+print "\n---------------------DIRECTORES ENTRE 4 Y 2 PELICULAS---------------------","\n"
+
+DIRECTOR_AL_MENOS_4_2=get_top_list(get_from_k_to_q_appearances_specific_second_category(CREDITS_CREW,NAME,JOB,DIRECTOR,rows,AT_LEAST_2,AT_LEAST_4))
+print "DIRECTORES",DIRECTOR_AL_MENOS_4_2
 print "DIRECTORES ENTRE 4 Y 2",number_of_appearances_over_total_from_k_to_q_appearances_in_category_specific_second_category(CREDITS_CREW,NAME,JOB,DIRECTOR,rows,AT_LEAST_2,AT_LEAST_4)
-#print "\n---------------------DIRECTORES CON 1 PELICULA---------------------","\n"
-#print "DIRECTORES",get_top_list(get_from_k_to_q_appearances_specific_second_category(CREDITS_CREW,NAME,JOB,DIRECTOR,rows,AT_LEAST_1,AT_LEAST_1))
+print "\n---------------------DIRECTORES CON 1 PELICULA---------------------","\n"
+
+DIRECTOR_CON_1_PELICULA= get_top_list(get_from_k_to_q_appearances_specific_second_category(CREDITS_CREW,NAME,JOB,DIRECTOR,rows,AT_LEAST_1,AT_LEAST_1))
+print "DIRECTORES",DIRECTOR_CON_1_PELICULA
 print "DIRECTORES CON 1 PELICULA",number_of_appearances_over_total_from_k_to_q_appearances_in_category_specific_second_category(CREDITS_CREW,NAME,JOB,DIRECTOR,rows,AT_LEAST_1,AT_LEAST_1)
+
+specific_category_ranges.append([CREDITS_CREW,NAME,[DIRECTOR_AL_MENOS_5,DIRECTOR_AL_MENOS_4_2,DIRECTOR_CON_1_PELICULA],None,"DIRECTORES",JOB,DIRECTOR])
 
 
 print "\n---------------------PRODUCTORES---------------------","\n"
-print "PELICULAS CON PRODUCTORES ",number_of_appearances_over_total_from_k_to_q_appearances_in_category_specific_second_category(CREDITS_CREW,NAME,JOB,PRODUCER,rows,0,MAX)
+top_productores=get_top_list(get_from_k_to_q_appearances_specific_second_category(CREDITS_CREW,NAME,JOB,PRODUCER,rows,5,MAX))
+print "PRODUCTORES CON AL MENOS 5 PELICULAS",top_productores
+print "PELICULAS CON PRODUCTORES CON AL MENOS 5 PELICULAS ",number_of_appearances_over_total_from_k_to_q_appearances_in_category_specific_second_category(CREDITS_CREW,NAME,JOB,PRODUCER,rows,5,MAX)
+specific_category_lists.append([CREDITS_CREW,NAME,top_productores,None,"Productores con al menos 5 peliculas",JOB,PRODUCER])
 
 
+"""
 print "\n---------------------PRODUCTORES EJECUTIVOS---------------------","\n"
 print "PELICULAS CON PRODUCTORES EJECUTIVOS",number_of_appearances_over_total_from_k_to_q_appearances_in_category_specific_second_category(CREDITS_CREW,NAME,JOB,EX_PRODUCER,rows,0,MAX)
 
 print "\n---------------------GUIONISTA---------------------","\n"
 print "PELICULAS CON GUIONISTA",number_of_appearances_over_total_from_k_to_q_appearances_in_category_specific_second_category(CREDITS_CREW,NAME,JOB,WRITER,rows,0,MAX)
+"""
 """"
 rows_average=[  row   for row in rows[1:] if float(row[AVERAGE]) > 7.0]
 print "\n \n TOP 10 \n"
@@ -369,3 +443,67 @@ print "PRODUCER", get_top_n_specific_second_category(CREDITS_CREW,NAME,JOB,PRODU
 print "EXECUTIVE PRODUCER", get_top_n_specific_second_category(CREDITS_CREW,NAME,JOB,EX_PRODUCER,rows_average,TOP10)
 print "WRITER", get_top_n_specific_second_category(CREDITS_CREW,NAME,JOB,WRITER,rows_average,TOP10)
 """
+new_rows=[ [r[CREDITS_ID],r[CREDITS_TITLE]] for r in rows]
+for i in range(0, len(new_rows)):
+	row=rows[i]
+	new_row=new_rows[i]
+	for rango in ranges:
+		range_category=rango[CATEGORY_RANGE]
+		name_category=rango[CATEGORY]
+		if(i==0):
+			new_row.append(row[name_category])
+			continue
+		for j in range(0,len(range_category)):
+			low_limit=range_category[j][0]
+			high_limit=range_category[j][1]
+			value=float(row[name_category])
+			if value == 0:
+				new_row.append(3)
+				break
+			if (low_limit< value)and(high_limit>= value):
+				new_row.append(j)
+				break
+	for specific_category_list in specific_category_lists:
+		row_number = specific_category_list[ROW_NUMBER]
+		category_name= specific_category_list[CATEGORY_NAME]
+		top_list=specific_category_list[TOP_LIST]
+		exclusion_list=specific_category_list[EXCLUSION_LIST]
+		second_category_name = None
+		second_category_value = None
+		if(len(specific_category_list)==7):
+			second_category_name = specific_category_list[SECOND_CATEGORY_NAME]
+			second_category_value = specific_category_list[SECOND_CATEGORY_VALUE]
+		if(i==0):
+			new_row.append(specific_category_list[ROW_NAME])
+			continue
+		new_row.append(appear_in_list(row_number,category_name,row,top_list,None,None,None))
+
+	for specific_category_range in specific_category_ranges:
+		row_number = specific_category_range[ROW_NUMBER]
+		category_name= specific_category_range[CATEGORY_NAME]
+		lists=specific_category_range[TOP_LIST]
+		second_category_name = None
+		second_category_value = None
+		if(len(specific_category_range)==7):
+			second_category_name = specific_category_range[SECOND_CATEGORY_NAME]
+			second_category_value = specific_category_range[SECOND_CATEGORY_VALUE]
+		if(i==0):
+			new_row.append(specific_category_range[ROW_NAME])
+			continue
+		selected=False
+		for j in range(len(lists)):
+			category_list=lists[j]
+			other_categories=[x for x in lists if x!=category_list]
+			exclusion_list=lists[:j-1]
+			if appear_in_list(row_number,category_name,row,category_list,exclusion_list,second_category_name,second_category_value):
+				selected = True
+				new_row.append(j)
+				break
+		if not selected:
+			new_row.append(len(lists))
+
+
+resultFile = open("processed_data.csv",'wb')
+wr = csv.writer(resultFile, dialect='excel')
+for item in new_rows:
+    wr.writerow(item)
