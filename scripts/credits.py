@@ -316,7 +316,6 @@ print "FALTA INFORMACION EN ALGUNAS PELICULAS"
 budget_list= sorted([ float(r[BUDGET]) for r in rows[1:]])
 budget_range_values=[ (budget_list[x[0]],budget_list[x[1]]) for x in rangos3]
 print "rangos de valores",budget_range_values
-ranges.append([budget_range_values,BUDGET])
 
 print  "\n","---------------------POPULARIDAD---------------------","\n"
 popularity_list= sorted([ float(r[POPULARITY]) for r in rows[1:]])
@@ -325,10 +324,12 @@ print "rangos de valores",popularity_range_values
 ranges.append([popularity_range_values,POPULARITY])
 
 print  "\n","---------------------FECHA DE ESTRENO---------------------","\n"
-release_date_list= sorted([ date(int(str(r[RELEASE_DATE]).split("-")[0]),int(str(r[RELEASE_DATE]).split("-")[1]),int(str(r[RELEASE_DATE]).split("-")[2])) for r in rows[1:] if r[RELEASE_DATE]!=""])
+for r in rows[1:]:
+	r[RELEASE_DATE]= date(int(str(r[RELEASE_DATE]).split("-")[0]),int(str(r[RELEASE_DATE]).split("-")[1]),int(str(r[RELEASE_DATE]).split("-")[2]))
+release_date_list= sorted([r[RELEASE_DATE] for r in rows[1:] if r[RELEASE_DATE]!=""])
 release_date_range_values=[ (release_date_list[x[0]],release_date_list[x[1]]) for x in rangos]
 print "rangos de valores",release_date_range_values
-ranges.append([popularity_range_values,POPULARITY])
+ranges.append([release_date_range_values,RELEASE_DATE])
 
 print  "\n","---------------------REVENUE--------------------","\n"
 print "FALTA INFORMACION EN ALGUNAS PELICULAS"
@@ -336,11 +337,14 @@ revenue_list= sorted([ float(r[REVENUE]) for r in rows[1:] ])
 revenue_range_values=[ (revenue_list[x[0]],revenue_list[x[1]]) for x in rangos3]
 print "rangos de valores",revenue_range_values
 ranges.append([revenue_range_values,REVENUE])
+
 def change(f):
 	if (f==""):
 		return float(0)
 	else:
 		return float(f)
+	
+
 
 print  "\n","---------------------RUNTIME--------------------","\n"
 print "FALTA INFORMACION EN ALGUNAS PELICULAS"
@@ -421,15 +425,14 @@ print "PRODUCTORES CON AL MENOS 5 PELICULAS",top_productores
 print "PELICULAS CON PRODUCTORES CON AL MENOS 5 PELICULAS ",number_of_appearances_over_total_from_k_to_q_appearances_in_category_specific_second_category(CREDITS_CREW,NAME,JOB,PRODUCER,rows,5,MAX)
 specific_category_lists.append([CREDITS_CREW,NAME,top_productores,None,"Productores con al menos 5 peliculas",JOB,PRODUCER])
 
-
 """
 print "\n---------------------PRODUCTORES EJECUTIVOS---------------------","\n"
 print "PELICULAS CON PRODUCTORES EJECUTIVOS",number_of_appearances_over_total_from_k_to_q_appearances_in_category_specific_second_category(CREDITS_CREW,NAME,JOB,EX_PRODUCER,rows,0,MAX)
 
 print "\n---------------------GUIONISTA---------------------","\n"
 print "PELICULAS CON GUIONISTA",number_of_appearances_over_total_from_k_to_q_appearances_in_category_specific_second_category(CREDITS_CREW,NAME,JOB,WRITER,rows,0,MAX)
-"""
-""""
+
+
 rows_average=[  row   for row in rows[1:] if float(row[AVERAGE]) > 7.0]
 print "\n \n TOP 10 \n"
 print len(rows_average)
@@ -456,7 +459,9 @@ for i in range(0, len(new_rows)):
 		for j in range(0,len(range_category)):
 			low_limit=range_category[j][0]
 			high_limit=range_category[j][1]
-			value=float(row[name_category])
+			value=row[name_category]
+			if name_category != RELEASE_DATE:
+				value=float(row[name_category])
 			if value == 0:
 				new_row.append(3)
 				break
