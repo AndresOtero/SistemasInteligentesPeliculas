@@ -1,6 +1,6 @@
 import csv
 import json
-from datetime import date
+from datetime import *
 rows_credits=[]
 NAME="name"
 JOB="job"
@@ -45,6 +45,7 @@ RUNTIME=13
 
 CATEGORY_RANGE=0
 CATEGORY=1
+DATA_MISSING=2
 
 ROW_NUMBER=0
 CATEGORY_NAME=1
@@ -301,27 +302,42 @@ for r in range(len(rows_movies)):
 print rows[0]
 
 tamanio=len(rows)-1
-rangos=[( (tamanio*i)/4  ,(tamanio*(i+1))/4 -1) for i in range(0,4)]
-rangos3=[( (tamanio*i)/3  ,(tamanio*(i+1))/3 -1) for i in range(0,3)]
+rangos=[ [ tamanio*i/4  ,tamanio*(i+1)/4 ] for i in range(0,4)]
 
+rangos[3][1]=rangos[3][1]-1
+
+rangos3=[[(tamanio*i)/3  ,(tamanio*(i+1))/3 ] for i in range(0,3)]
+rangos3[2][1]-=1
 """Arreglo de datos """
+correct_rows=[]
 for r in rows[1:]:
 	if r[RELEASE_DATE]=="":
 		r[RELEASE_DATE]="2015-3-1"
-
+	if r[AVERAGE]=="0":
+		print  "ojo"
 ranges=[]
+specific_category_lists=[]
+specific_category_ranges=[]
+
+print  "\n","---------------------AVERAGE VOTE---------------------","\n"
+average_list= sorted([ float(r[AVERAGE]) for r in rows[1:]])
+average_range_values=[ (average_list[x[0]],average_list[x[1]]) for x in rangos3]
+print "rangos de valores",average_range_values
+ranges.append([average_range_values,AVERAGE,False])
 
 print  "\n","---------------------BUDGET---------------------","\n"
 print "FALTA INFORMACION EN ALGUNAS PELICULAS"
 budget_list= sorted([ float(r[BUDGET]) for r in rows[1:]])
 budget_range_values=[ (budget_list[x[0]],budget_list[x[1]]) for x in rangos3]
 print "rangos de valores",budget_range_values
+ranges.append([budget_range_values,BUDGET,True])
+
 
 print  "\n","---------------------POPULARIDAD---------------------","\n"
 popularity_list= sorted([ float(r[POPULARITY]) for r in rows[1:]])
 popularity_range_values=[ (popularity_list[x[0]],popularity_list[x[1]]) for x in rangos]
 print "rangos de valores",popularity_range_values
-ranges.append([popularity_range_values,POPULARITY])
+ranges.append([popularity_range_values,POPULARITY,False])
 
 print  "\n","---------------------FECHA DE ESTRENO---------------------","\n"
 for r in rows[1:]:
@@ -329,22 +345,21 @@ for r in rows[1:]:
 release_date_list= sorted([r[RELEASE_DATE] for r in rows[1:] if r[RELEASE_DATE]!=""])
 release_date_range_values=[ (release_date_list[x[0]],release_date_list[x[1]]) for x in rangos]
 print "rangos de valores",release_date_range_values
-ranges.append([release_date_range_values,RELEASE_DATE])
+ranges.append([release_date_range_values,RELEASE_DATE,False])
 
 print  "\n","---------------------REVENUE--------------------","\n"
 print "FALTA INFORMACION EN ALGUNAS PELICULAS"
 revenue_list= sorted([ float(r[REVENUE]) for r in rows[1:] ])
 revenue_range_values=[ (revenue_list[x[0]],revenue_list[x[1]]) for x in rangos3]
 print "rangos de valores",revenue_range_values
-ranges.append([revenue_range_values,REVENUE])
+ranges.append([revenue_range_values,REVENUE,True])
+
 
 def change(f):
 	if (f==""):
 		return float(0)
 	else:
 		return float(f)
-	
-
 
 print  "\n","---------------------RUNTIME--------------------","\n"
 print "FALTA INFORMACION EN ALGUNAS PELICULAS"
@@ -353,10 +368,9 @@ for r in rows[1:]:
 runtime_list= sorted([ r[RUNTIME] for r in rows[1:] ])
 runtime_range_values=[ (runtime_list[x[0]],runtime_list[x[1]]) for x in rangos3]
 print "rangos de valores",runtime_range_values
-ranges.append([runtime_range_values,RUNTIME])
+ranges.append([runtime_range_values,RUNTIME,True])
 
-specific_category_lists=[]
-specific_category_ranges=[]
+
 
 print "\n","---------------------ACTORES TOP 100---------------------","\n"
 #print "Lista de ACTORES",get_top_list(get_top_from_m_to_n(CREDITS_ACTOR,NAME,rows,FIRST,TOP100))
@@ -365,7 +379,6 @@ top_list_actor=get_top_list( get_top_from_m_to_n(CREDITS_ACTOR,NAME,rows,FIRST,T
 specific_category_lists.append([CREDITS_ACTOR,NAME,top_list_actor,None,"TOP 100 ACTOR"])
 
 print "\n---------------------GENEROS---------------------","\n"
-
 DRAMA=get_top_list(get_top_from_m_to_n(MOVIES_GENRE,NAME,rows,FIRST,TOP1))
 COMEDIA= get_top_list(get_top_from_m_to_n(MOVIES_GENRE,NAME,rows,1,2))
 THRILLER= get_top_list(get_top_from_m_to_n(MOVIES_GENRE,NAME,rows,2,3))
@@ -400,12 +413,12 @@ print "PAISES PRODUCTORES",top_country
 print "PAISES PRODUCTORES",number_of_appearances_over_total_from_top_n_to_m_in_category(PRODUCTION_COUNTRIES,NAME,rows,FIRST,TOP1)
 specific_category_lists.append([PRODUCTION_COUNTRIES,NAME,top_country,None,"USA"])
 
-
 print "\n---------------------DIRECTORES ---------------------","\n"
 DIRECTOR_AL_MENOS_5=get_top_list(get_from_k_to_q_appearances_specific_second_category(CREDITS_CREW,NAME,JOB,DIRECTOR,rows,AT_LEAST_5,MAX))
 print "DIRECTORES",DIRECTOR_AL_MENOS_5
 print "DIRECTORES AL MENOS 5 PELICULAS",number_of_appearances_over_total_from_k_to_q_appearances_in_category_specific_second_category(CREDITS_CREW,NAME,JOB,DIRECTOR,rows,AT_LEAST_5,MAX)
 print "\n---------------------DIRECTORES ENTRE 4 Y 2 PELICULAS---------------------","\n"
+
 
 DIRECTOR_AL_MENOS_4_2=get_top_list(get_from_k_to_q_appearances_specific_second_category(CREDITS_CREW,NAME,JOB,DIRECTOR,rows,AT_LEAST_2,AT_LEAST_4))
 print "DIRECTORES",DIRECTOR_AL_MENOS_4_2
@@ -418,12 +431,13 @@ print "DIRECTORES CON 1 PELICULA",number_of_appearances_over_total_from_k_to_q_a
 
 specific_category_ranges.append([CREDITS_CREW,NAME,[DIRECTOR_AL_MENOS_5,DIRECTOR_AL_MENOS_4_2,DIRECTOR_CON_1_PELICULA],None,"DIRECTORES",JOB,DIRECTOR])
 
-
 print "\n---------------------PRODUCTORES---------------------","\n"
 top_productores=get_top_list(get_from_k_to_q_appearances_specific_second_category(CREDITS_CREW,NAME,JOB,PRODUCER,rows,5,MAX))
 print "PRODUCTORES CON AL MENOS 5 PELICULAS",top_productores
 print "PELICULAS CON PRODUCTORES CON AL MENOS 5 PELICULAS ",number_of_appearances_over_total_from_k_to_q_appearances_in_category_specific_second_category(CREDITS_CREW,NAME,JOB,PRODUCER,rows,5,MAX)
 specific_category_lists.append([CREDITS_CREW,NAME,top_productores,None,"Productores con al menos 5 peliculas",JOB,PRODUCER])
+
+
 
 """
 print "\n---------------------PRODUCTORES EJECUTIVOS---------------------","\n"
@@ -446,67 +460,91 @@ print "PRODUCER", get_top_n_specific_second_category(CREDITS_CREW,NAME,JOB,PRODU
 print "EXECUTIVE PRODUCER", get_top_n_specific_second_category(CREDITS_CREW,NAME,JOB,EX_PRODUCER,rows_average,TOP10)
 print "WRITER", get_top_n_specific_second_category(CREDITS_CREW,NAME,JOB,WRITER,rows_average,TOP10)
 """
-new_rows=[ [r[CREDITS_ID],r[CREDITS_TITLE]] for r in rows]
+def change_bool_for_int(bool):
+    if bool==True:
+        return 1
+    else:
+        return 0
+
+new_rows=[ [r[CREDITS_ID]] for r in rows]
 for i in range(0, len(new_rows)):
-	row=rows[i]
-	new_row=new_rows[i]
-	for rango in ranges:
-		range_category=rango[CATEGORY_RANGE]
-		name_category=rango[CATEGORY]
-		if(i==0):
-			new_row.append(row[name_category])
-			continue
-		for j in range(0,len(range_category)):
-			low_limit=range_category[j][0]
-			high_limit=range_category[j][1]
-			value=row[name_category]
-			if name_category != RELEASE_DATE:
-				value=float(row[name_category])
-			if value == 0:
-				new_row.append(3)
-				break
-			if (low_limit< value)and(high_limit>= value):
-				new_row.append(j)
-				break
-	for specific_category_list in specific_category_lists:
-		row_number = specific_category_list[ROW_NUMBER]
-		category_name= specific_category_list[CATEGORY_NAME]
-		top_list=specific_category_list[TOP_LIST]
-		exclusion_list=specific_category_list[EXCLUSION_LIST]
-		second_category_name = None
-		second_category_value = None
-		if(len(specific_category_list)==7):
-			second_category_name = specific_category_list[SECOND_CATEGORY_NAME]
-			second_category_value = specific_category_list[SECOND_CATEGORY_VALUE]
-		if(i==0):
-			new_row.append(specific_category_list[ROW_NAME])
-			continue
-		new_row.append(appear_in_list(row_number,category_name,row,top_list,None,None,None))
+    row = rows[i]
+    new_row = new_rows[i]
+    for rango in ranges:
+        range_category = rango[CATEGORY_RANGE]
+        name_category = rango[CATEGORY]
+        data_missing = rango[DATA_MISSING]
+        if (i == 0):
+            new_row.append(row[name_category])
+            continue
+        for j in range(0, len(range_category)):
+            low_limit = range_category[j][0]
+            high_limit = range_category[j][1]
 
-	for specific_category_range in specific_category_ranges:
-		row_number = specific_category_range[ROW_NUMBER]
-		category_name= specific_category_range[CATEGORY_NAME]
-		lists=specific_category_range[TOP_LIST]
-		second_category_name = None
-		second_category_value = None
-		if(len(specific_category_range)==7):
-			second_category_name = specific_category_range[SECOND_CATEGORY_NAME]
-			second_category_value = specific_category_range[SECOND_CATEGORY_VALUE]
-		if(i==0):
-			new_row.append(specific_category_range[ROW_NAME])
-			continue
-		selected=False
-		for j in range(len(lists)):
-			category_list=lists[j]
-			other_categories=[x for x in lists if x!=category_list]
-			exclusion_list=lists[:j-1]
-			if appear_in_list(row_number,category_name,row,category_list,exclusion_list,second_category_name,second_category_value):
-				selected = True
-				new_row.append(j)
-				break
-		if not selected:
-			new_row.append(len(lists))
+            value = row[name_category]
+            if name_category != RELEASE_DATE:
+                value = float(row[name_category])
+                if j == len(range_category) - 1:
+                    high_limit+=1.0
+            else:
+                if j == len(range_category) - 1:
+                    high_limit+=timedelta(days=1)
+            if value == 0 and data_missing:
+                new_row.append(3)
+                break
 
+            if (low_limit <= value) and (high_limit > value):
+                new_row.append(j)
+                break
+    for specific_category_list in specific_category_lists:
+        row_number = specific_category_list[ROW_NUMBER]
+        category_name = specific_category_list[CATEGORY_NAME]
+        top_list = specific_category_list[TOP_LIST]
+        exclusion_list = specific_category_list[EXCLUSION_LIST]
+        second_category_name = None
+        second_category_value = None
+        if (len(specific_category_list) == 7):
+            second_category_name = specific_category_list[SECOND_CATEGORY_NAME]
+            second_category_value = specific_category_list[SECOND_CATEGORY_VALUE]
+        if (i == 0):
+            new_row.append(specific_category_list[ROW_NAME])
+            continue
+        new_row.append(change_bool_for_int(appear_in_list(row_number, category_name, row, top_list, None, None, None)))
+
+    for specific_category_range in specific_category_ranges:
+        row_number = specific_category_range[ROW_NUMBER]
+        category_name = specific_category_range[CATEGORY_NAME]
+        lists = specific_category_range[TOP_LIST]
+        second_category_name = None
+        second_category_value = None
+        if (len(specific_category_range) == 7):
+            second_category_name = specific_category_range[SECOND_CATEGORY_NAME]
+            second_category_value = specific_category_range[SECOND_CATEGORY_VALUE]
+        if (i == 0):
+            new_row.append(specific_category_range[ROW_NAME])
+            continue
+        selected = False
+        for j in range(len(lists)):
+            category_list = lists[j]
+            other_categories = [x for x in lists if x != category_list]
+            exclusion_list = lists[:j - 1]
+            if appear_in_list(row_number, category_name, row, category_list, exclusion_list, second_category_name,
+                              second_category_value):
+                selected = True
+                new_row.append(j)
+                break
+        if not selected:
+            new_row.append(len(lists))
+
+largo=len(new_rows[0])
+errores=0
+for row in new_rows:
+    if len(row)!=largo:
+
+        print "ERROR" ,row
+        print len(row), largo
+        errores= errores+1
+print "ERRORES",errores
 
 resultFile = open("processed_data.csv",'wb')
 wr = csv.writer(resultFile, dialect='excel')
