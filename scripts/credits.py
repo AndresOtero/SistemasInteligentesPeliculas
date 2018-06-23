@@ -318,12 +318,14 @@ for r in rows[1:]:
 ranges=[]
 specific_category_lists=[]
 specific_category_ranges=[]
+class_range=[]
 
 print  "\n","---------------------AVERAGE VOTE---------------------","\n"
 average_list= sorted([ float(r[AVERAGE]) for r in rows[1:]])
-average_range_values=[ (average_list[x[0]],average_list[x[1]]) for x in rangos3]
+#average_range_values=[ (average_list[x[0]],average_list[x[1]]) for x in rangos3]
+average_range_values=[[0.0,6.0],[6.0,8.0],[8.0,10.0]]
 print "rangos de valores",average_range_values
-ranges.append([average_range_values,AVERAGE,False])
+class_range.append([average_range_values,AVERAGE,False])
 
 print  "\n","---------------------BUDGET---------------------","\n"
 print "FALTA INFORMACION EN ALGUNAS PELICULAS"
@@ -382,10 +384,13 @@ print "\n---------------------GENEROS---------------------","\n"
 DRAMA=get_top_list(get_top_from_m_to_n(MOVIES_GENRE,NAME,rows,FIRST,TOP1))
 COMEDIA= get_top_list(get_top_from_m_to_n(MOVIES_GENRE,NAME,rows,1,2))
 THRILLER= get_top_list(get_top_from_m_to_n(MOVIES_GENRE,NAME,rows,2,3))
+GENRES=get_top_list(get_top_from_m_to_n(MOVIES_GENRE,NAME,rows,FIRST,TOP100))
 print "PORCENTAJE GENEROS DRAMA",number_of_appearances_over_total_from_top_n_to_m_in_category(MOVIES_GENRE,NAME,rows,FIRST,TOP1)
 print "PORCENTAJE GENEROS COMEDIA",number_of_appearances_over_total_from_top_n_to_m_in_category_with_exclusion(MOVIES_GENRE,NAME,rows,1,2,DRAMA)
 print "PORCENTAJE GENEROS THRILLER",number_of_appearances_over_total_from_top_n_to_m_in_category_with_exclusion(MOVIES_GENRE,NAME,rows,2,3,DRAMA+COMEDIA)
-specific_category_ranges.append([MOVIES_GENRE,NAME,[DRAMA,COMEDIA,THRILLER],None,"GENEROS"])
+for genre in GENRES:
+	specific_category_lists.append([MOVIES_GENRE, NAME, genre, None, genre])
+
 
 print "\n---------------------LENGUAJE ORIGINAL---------------------","\n"
 top_language=get_top_list(get_top_n_no_multiple_options(ORIGINAL_LANGUAGE,rows,1))
@@ -535,6 +540,25 @@ for i in range(0, len(new_rows)):
                 break
         if not selected:
             new_row.append(len(lists))
+
+    for rango in class_range:
+        range_category = rango[CATEGORY_RANGE]
+        name_category = rango[CATEGORY]
+        data_missing = rango[DATA_MISSING]
+        if (i == 0):
+            new_row.append(row[name_category])
+            continue
+        for j in range(0, len(range_category)):
+            low_limit = range_category[j][0]
+            high_limit = range_category[j][1]
+            value = float(row[name_category])
+            if j == len(range_category) - 1:
+	            high_limit+=1.0
+
+            if (low_limit <= value) and (high_limit > value):
+                new_row.append("Clase"+str(j))
+                break
+
 
 largo=len(new_rows[0])
 errores=0
